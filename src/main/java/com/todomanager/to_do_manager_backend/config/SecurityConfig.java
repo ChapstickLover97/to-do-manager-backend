@@ -3,6 +3,8 @@ package com.todomanager.to_do_manager_backend.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -23,6 +25,12 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        // Replace with your Okta JWKS URI
+        return NimbusJwtDecoder.withJwkSetUri("https://dev-65717442.okta.com/oauth2/default/v1/keys").build();
     }
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
