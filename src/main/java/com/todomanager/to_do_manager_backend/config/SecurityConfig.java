@@ -13,15 +13,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Configure Spring Security
         http
-            .csrf(csrf -> csrf.disable()) // Updated to use the Lambda DSL
+            .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity (not recommended for production)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/tasks/**").authenticated() // Protect task-related endpoints
-                .anyRequest().permitAll() // Allow other endpoints
+                .anyRequest().permitAll() // Allow all other endpoints without authentication
             )
             .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())) // Updated to use the Lambda DSL
+                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())) // Use JWT for OIDC
             );
 
         return http.build();
@@ -29,13 +28,13 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        // Replace with your Okta JWKS URI
+        // Ensure the correct JWK URI is configured for your Okta Authorization Server
         return NimbusJwtDecoder.withJwkSetUri("https://dev-65717442.okta.com/oauth2/default/v1/keys").build();
     }
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        // Optionally customize JWT conversion if needed
+        // Customize roles mapping if necessary (e.g., extracting roles from JWT claims)
         return converter;
     }
 }
